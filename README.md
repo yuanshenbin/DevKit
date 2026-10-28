@@ -30,33 +30,48 @@ DevKit 将日常开发中常用的调试、数据处理和系统辅助工具放�
 | macOS | Intel，x64 | 对应的 x64 `.dmg` |
 | Linux | Intel / AMD x64 | `.AppImage` 或 `.deb` |
 
-### macOS 首次启动被拦截
+### 首次安装与信任配置（请先阅读）
+
+DevKit 由个人维护，使用免费生成的固定自签名证书。Windows、macOS 请同时下载 Release 中对应的公开证书，完成下列配置后，正常打开应用即可；这些证书与 HTTPS 抓包证书不同。
+
+#### Windows
+
+下载 EXE 和 `devkit-windows.cer`。在开始菜单搜索 `cmd`，右键「命令提示符」，选择**以管理员身份运行**，按系统提示确认。将下面命令中的 `D:\test\devkit-windows.cer` 替换为证书在你电脑上的实际完整路径，再复制到该管理员 CMD 窗口中执行，无需先打开 PowerShell。
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Certificate -FilePath 'D:\test\devkit-windows.cer' -CertStoreLocation 'Cert:\LocalMachine\Root'"
+```
+
+导入成功后，**整台电脑的所有 Windows 账号均信任该证书**，无需为每个账号重复导入。运行 EXE 完成安装，再从开始菜单或桌面快捷方式正常打开 DevKit；日常运行无需以管理员身份启动。证书信任不会自动为所有账号安装应用，SmartScreen 仍可能提示。
+
+#### macOS
 
 当前 macOS 安装包使用自签名证书，尚未经过 Apple 公证。首次打开可能提示「Apple 无法验证 DevKit 是否包含恶意软件」。
 
-确认从本项目 Releases 下载后，打开 DMG，将 DevKit 拖入「应用程序」并推出安装磁盘。在「终端」中**逐行执行**：
+先下载并双击 `devkit-mac.cer`，导入「登录」钥匙串，在「钥匙串访问」找到 `DevKit Internal macOS`，将其「代码签名」设为「始终信任」，关闭窗口并按系统提示确认。
+
+再打开 DMG，将 DevKit 拖入「应用程序」并推出安装磁盘。确认安装包来自本项目 Releases 后，在「终端」中执行：
 
 ```bash
 xattr -dr com.apple.quarantine "/Applications/DevKit.app"
-open "/Applications/DevKit.app"
 ```
 
-第一条命令仅移除 DevKit 的下载隔离标记，第二条启动应用。如果第一条提示权限不足，可改用 `sudo xattr -dr com.apple.quarantine "/Applications/DevKit.app"`，按提示输入电脑登录密码（终端不显示密码字符），成功后再执行第二条。
+该命令仅移除 DevKit 的下载隔离标记，不能替代代码签名信任。如果提示权限不足，可改用 `sudo xattr -dr com.apple.quarantine "/Applications/DevKit.app"`，按提示输入电脑登录密码（终端不显示密码字符）。执行成功后，从「应用程序」、启动台或 Dock **手动打开 DevKit** 即可，以后无需每次执行命令。
 
 也可在启动被拦截后，进入「系统设置 → 隐私与安全性」，找到 DevKit 并选择「仍要打开」。本机放行不等于完成 Apple 公证。
 
-### Windows 与 Linux
+#### Linux
 
-Windows 运行 `.exe` 安装程序；当前自签名安装包可能触发 SmartScreen 提示。
-
-Linux 通常没有上述 Apple 公证校验，无需执行 `xattr`。AppImage 首次运行可能需要增加执行权限；在下载目录打开终端，将下面文件名替换为实际下载的文件名后执行：
+Linux 无需安装 Windows/macOS 证书，也无需执行 `xattr`。AppImage 首次运行可能需要增加执行权限；在下载目录打开终端，将下面文件名替换为实际下载的文件名后执行：
 
 ```bash
 chmod +x "./DevKit-版本号-x64.AppImage"
 "./DevKit-版本号-x64.AppImage"
 ```
 
-如提示缺少 FUSE 或 Electron 沙箱受限，处理方式与 macOS 不同，详见 [完整安装说明](docs/install.md)。具体发布版本、安装包和变更记录以 Releases 为准。
+以后可双击 AppImage 正常打开；请放在当前用户可写的目录，在线更新需要文件及父目录可写。Debian / Ubuntu 也可安装 `.deb`，安装后从系统应用菜单打开，更新时可能需要管理员授权。Linux 的 GPG 公钥用于验证下载文件，不是启动或在线更新的必装证书。
+
+配置完成后，进入「设置 → 关于 DevKit」即可检查并下载新版本，按提示完成覆盖更新。更新需满足对应平台的签名和目录权限要求；首次打开的放行不等于完成 Apple 公证。FUSE、沙箱问题及完整步骤见 [安装说明](docs/install.md)。具体发布版本、安装包和变更记录以 Releases 为准。
 
 ## 主要功能
 
