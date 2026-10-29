@@ -36,13 +36,13 @@ DevKit 由个人维护，使用免费生成的固定自签名证书。Windows、
 
 #### Windows
 
-下载 EXE 和 `devkit-windows.cer`。在开始菜单搜索 `cmd`，右键「命令提示符」，选择**以管理员身份运行**，按系统提示确认。将下面命令中的 `D:\test\devkit-windows.cer` 替换为证书在你电脑上的实际完整路径，再复制到该管理员 CMD 窗口中执行，无需先打开 PowerShell。
+下载 EXE 和 `devkit-windows.cer`。在开始菜单搜索 `cmd`，右键「命令提示符」，选择**以管理员身份运行**，按系统提示确认。将下面命令中的 `D:\devKit\devkit-windows.cer` 替换为证书在你电脑上的实际完整路径，保留路径两侧的英文半角单引号，路径前后不要添加空格，再复制到该管理员 CMD 窗口中执行，无需先打开 PowerShell。
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Certificate -FilePath 'D:\test\devkit-windows.cer' -CertStoreLocation 'Cert:\LocalMachine\Root'"
+```cmd
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Certificate -FilePath 'D:\devKit\devkit-windows.cer' -CertStoreLocation 'Cert:\LocalMachine\Root'"
 ```
 
-导入成功后，**整台电脑的所有 Windows 账号均信任该证书**，无需为每个账号重复导入。运行 EXE 完成安装，再从开始菜单或桌面快捷方式正常打开 DevKit；日常运行无需以管理员身份启动。证书信任不会自动为所有账号安装应用，SmartScreen 仍可能提示。
+输出中显示 `LocalMachine\Root`、证书指纹（`Thumbprint`）和 `DevKit Internal Windows`，且没有报错，即表示证书导入成功，**整台电脑的所有 Windows 账号均信任该证书**，无需为每个账号重复导入。这一步只配置证书信任；还需运行 EXE 完成安装，再从开始菜单或桌面快捷方式正常打开 DevKit，日常运行无需以管理员身份启动。证书信任不会自动为所有账号安装应用，SmartScreen 仍可能提示。
 
 #### macOS
 
